@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KÔVEX — Create · Build · Innovate</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --bg2: #0f0f1a;
+      --cyan: #00E5FF;
+      --gold: #D4AF37;
+      --white: #f0f0f0;
+      --muted: #444460;
+      --card: #11111f;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* GRID BACKGROUND */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--muted) 1px, transparent 1px),
+        linear-gradient(90deg, var(--muted) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.08;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(0,229,255,0.08);
+    }
+
+    .nav-logo {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--cyan);
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px rgba(0,229,255,0.5);
+    }
+
+    .nav-logo span { color: var(--gold); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      opacity: 0.6;
+      transition: opacity 0.2s, color 0.2s;
+    }
+
+    .nav-links a:hover { opacity: 1; color: var(--cyan); }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 6rem 2rem 4rem;
+      z-index: 1;
+    }
+
+    .hero-eyebrow {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 6px;
+      color: var(--gold);
+      opacity: 0.8;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-diamond {
+      width: 90px;
+      height: 90px;
+      margin: 0 auto 2rem;
+      position: relative;
+    }
+
+    .hero-diamond svg { width: 100%; height: 100%; }
+
+    .hero-title {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(3.5rem, 12vw, 7rem);
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      color: var(--cyan);
+      text-shadow: 0 0 40px rgba(0,229,255,0.4), 0 0 80px rgba(0,229,255,0.15);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+
+    .hero-tagline {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 6px;
+      color: var(--gold);
+      opacity: 0.7;
+      margin-bottom: 2rem;
+    }
+
+    .hero-desc {
+      max-width: 480px;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--white);
+      opacity: 0.6;
+      margin-bottom: 3rem;
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.9rem 2.2rem;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 3px;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+
+    .hero-cta:hover {
+      background: var(--cyan);
+      color: var(--bg);
+      box-shadow: 0 0 30px rgba(0,229,255,0.3);
+    }
+
+    /* SCROLL INDICATOR */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      opacity: 0.3;
+      animation: bounce 2s infinite;
+    }
+
+    .scroll-hint span {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    /* SECTIONS */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 5rem 2rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 5px;
+      color: var(--gold);
+      opacity: 0.7;
+      margin-bottom: 0.75rem;
+    }
+
+    .section-title {
+      font-family: 'Space Mono', monospace;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 1rem;
+    }
+
+    .section-title span { color: var(--cyan); }
+
+    .section-divider {
+      width: 60px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--gold), transparent);
+      margin-bottom: 3rem;
+    }
+
+    /* IDENTITY SECTION */
+    .identity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .identity-card {
+      background: var(--card);
+      border: 1px solid rgba(0,229,255,0.08);
+      padding: 2rem 1.5rem;
+      transition: border-color 0.3s, transform 0.3s;
+    }
+
+    .identity-card:hover {
+      border-color: rgba(0,229,255,0.3);
+      transform: translateY(-4px);
+    }
+
+    .identity-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+    }
+
+    .identity-card h3 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      color: var(--cyan);
+      margin-bottom: 0.5rem;
+    }
+
+    .identity-card p {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      opacity: 0.55;
+    }
+
+    /* SERVICES */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 3rem;
+    }
+
+    .service-card {
+      background: var(--card);
+      border: 1px solid rgba(0,229,255,0.08);
+      padding: 2rem;
+      position: relative;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+
+    .service-card:hover {
+      border-color: rgba(0,229,255,0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .service-icon { font-size: 1.6rem; margin-bottom: 1rem; }
+
+    .service-card h3 {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.95rem;
+      letter-spacing: 2px;
+      color: var(--cyan);
+      margin-bottom: 0.6rem;
+    }
+
+    .service-card p {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      opacity: 0.55;
+      margin-bottom: 1.2rem;
+    }
+
+    .service-price {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    .service-price small {
+      font-size: 0.65rem;
+      font-weight: 400;
+      opacity: 0.6;
+      letter-spacing: 0.5px;
+      display: block;
+      margin-top: 0.2rem;
+    }
+
+    /* ORDER STEPS */
+    .order-wrap {
+      background: var(--card);
+      border: 1px solid rgba(212,175,55,0.15);
+      padding: 2.5rem;
+    }
+
+    .order-steps {
+      list-style: none;
+      counter-reset: step;
+      margin-bottom: 2rem;
+    }
+
+    .order-steps li {
+      counter-increment: step;
+      position: relative;
+      padding-left: 3rem;
+      margin-bottom: 1.4rem;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      opacity: 0.75;
+    }
+
+    .order-steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 0;
+      top: -0.1rem;
+      width: 2rem;
+      height: 2rem;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .order-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .order-meta div {
+      font-size: 0.8rem;
+      opacity: 0.6;
+    }
+
+    .order-meta strong {
+      display: block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      opacity: 1;
+      margin-bottom: 0.3rem;
+    }
+
+    .service-note {
+      font-size: 0.78rem;
+      opacity: 0.45;
+      line-height: 1.7;
+      max-width: 700px;
+      margin-top: 2rem;
+    }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .project-card {
+      background: var(--card);
+      border: 1px solid rgba(212,175,55,0.1);
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      cursor: pointer;
+    }
+
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--gold));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s;
+    }
+
+    .project-card:hover::before { transform: scaleX(1); }
+
+    .project-card:hover {
+      border-color: rgba(0,229,255,0.2);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+    }
+
+    .project-status {
+      display: inline-block;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      padding: 0.25rem 0.75rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .status-active { background: rgba(0,229,255,0.1); color: var(--cyan); border: 1px solid rgba(0,229,255,0.3); }
+    .status-soon { background: rgba(212,175,55,0.1); color: var(--gold); border: 1px solid rgba(212,175,55,0.3); }
+    .status-live { background: rgba(0,255,100,0.1); color: #00ff64; border: 1px solid rgba(0,255,100,0.3); }
+
+    .project-name {
+      font-family: 'Space Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: var(--white);
+      margin-bottom: 0.75rem;
+    }
+
+    .project-desc {
+      font-size: 0.85rem;
+      line-height: 1.6;
+      opacity: 0.5;
+      margin-bottom: 1.5rem;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 1px;
+      padding: 0.2rem 0.6rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* CONTACT */
+    .contact-wrap {
+      background: var(--card);
+      border: 1px solid rgba(0,229,255,0.1);
+      padding: 3rem;
+      text-align: center;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    .contact-wrap p {
+      opacity: 0.55;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .contact-btn {
+      display: inline-block;
+      padding: 1rem 2.5rem;
+      background: transparent;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      letter-spacing: 3px;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .contact-btn:hover {
+      background: var(--gold);
+      color: var(--bg);
+    }
+
+    /* FOOTER */
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 2rem;
+      border-top: 1px solid rgba(255,255,255,0.05);
+    }
+
+    footer p {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      opacity: 0.25;
+    }
+
+    footer span { color: var(--cyan); opacity: 1; }
+
+    /* FULL WIDTH SECTIONS */
+    .full-section {
+      max-width: 100%;
+      padding: 5rem 0;
+    }
+
+    .full-section .inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    /* ANIMATE IN */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* WHATSAPP FLOTTANT */
+    .wa-float {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 0.75rem;
+    }
+    .wa-label {
+      background: #11111f;
+      border: 1px solid rgba(0,229,255,0.2);
+      color: var(--white);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 2px;
+      padding: 0.4rem 0.9rem;
+      opacity: 0;
+      transform: translateX(10px);
+      transition: opacity 0.3s, transform 0.3s;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .wa-float:hover .wa-label { opacity: 1; transform: translateX(0); }
+    .wa-btn {
+      width: 60px;
+      height: 60px;
+      background: #25D366;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+      text-decoration: none;
+      transition: transform 0.3s, box-shadow 0.3s;
+      animation: wa-pulse 2.5s infinite;
+    }
+    .wa-btn:hover { transform: scale(1.1); box-shadow: 0 6px 30px rgba(37,211,102,0.6); }
+    .wa-btn svg { width: 32px; height: 32px; }
+    @keyframes wa-pulse {
+      0%, 100% { box-shadow: 0 4px 20px rgba(37,211,102,0.4); }
+      50% { box-shadow: 0 4px 30px rgba(37,211,102,0.7), 0 0 0 8px rgba(37,211,102,0.1); }
+    }
+
+    /* MOBILE */
+    @media (max-width: 600px) {
+      nav { padding: 1rem 1.2rem; }
+      .nav-links { display: none; }
+      .contact-wrap { padding: 2rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">KÔ<span>V</span>EX</div>
+    <ul class="nav-links">
+      <li><a href="#services">SERVICES</a></li>
+      <li><a href="#projets">PROJETS</a></li>
+      <li><a href="#identite">IDENTITÉ</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="hero-eyebrow">AFRIQUE · NUMÉRIQUE · CRÉATION</p>
+
+    <div class="hero-diamond">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="50,5 95,50 50,95 5,50" fill="none" stroke="#D4AF37" stroke-width="2"/>
+        <polygon points="50,22 78,50 50,78 22,50" fill="none" stroke="#00E5FF" stroke-width="1.5" opacity="0.7"/>
+        <line x1="34" y1="35" x2="34" y2="65" stroke="#00E5FF" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="34" y1="50" x2="58" y2="32" stroke="#00E5FF" stroke-width="2.5" stroke-linecap="round"/>
+        <line x1="34" y1="50" x2="58" y2="68" stroke="#00E5FF" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="50" cy="5" r="3" fill="#D4AF37"/>
+        <circle cx="95" cy="50" r="3" fill="#D4AF37"/>
+        <circle cx="50" cy="95" r="3" fill="#D4AF37"/>
+        <circle cx="5" cy="50" r="3" fill="#D4AF37"/>
+      </svg>
+    </div>
+
+    <h1 class="hero-title">KÔVEX</h1>
+    <p class="hero-tagline">CREATE · BUILD · INNOVATE</p>
+    <p class="hero-desc">Un studio de création technologique africain. Apps, APIs, langages construits — tout sous une seule identité.</p>
+    <a href="#projets" class="hero-cta">▸ VOIR LES PROJETS</a>
+
+    <div class="scroll-hint">
+      <span>SCROLL</span>
+      <svg width="16" height="20" viewBox="0 0 16 20"><path d="M8 0v16M2 10l6 8 6-8" stroke="#00E5FF" stroke-width="1.5" fill="none"/></svg>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section id="services" class="fade-up">
+    <p class="section-label">CE QUE NOUS FAISONS</p>
+    <h2 class="section-title">Nos <span>services</span>.</h2>
+    <div class="section-divider"></div>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-icon">🛠️</div>
+        <h3>DÉPANNAGE INFORMATIQUE</h3>
+        <p>Diagnostic et résolution de problèmes PC : logiciels, configuration, performance.</p>
+        <div class="service-price">2 500 F CFA<small>tarif de base, selon le besoin</small></div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🐍</div>
+        <h3>COURS PYTHON</h3>
+        <p>Initiation et accompagnement pour apprendre à coder en Python, à ton rythme.</p>
+        <div class="service-price">2 500 F CFA<small>par séance</small></div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🔑</div>
+        <h3>LICENCES LOGICIELLES</h3>
+        <p>Windows, Office, antivirus et autres logiciels courants, livrés rapidement.</p>
+        <div class="service-price">Prix variable<small>selon le logiciel demandé</small></div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-icon">🌐</div>
+        <h3>CRÉATION DE SITE WEB</h3>
+        <p>Sites vitrine et présentation sur mesure, livrés avec le lien en ligne et les fichiers source.</p>
+        <div class="service-price">Devis personnalisé<small>selon le projet</small></div>
+      </div>
+    </div>
+
+    <div class="order-wrap">
+      <p class="section-label" style="margin-bottom:1.5rem;">COMMENT COMMANDER</p>
+      <ol class="order-steps">
+        <li>Décris ton besoin sur WhatsApp (dépannage, cours Python, licence, ou site web).</li>
+        <li>Pour les services à 2 500 F, envoie le paiement via Wave. Pour un site web, un devis est établi avant tout paiement.</li>
+        <li>Envoie la confirmation de paiement par WhatsApp ou par e-mail.</li>
+        <li>Réception sous 24h (livraison à distance : appel, visio, fichiers ou lien selon le service).</li>
+      </ol>
+      <div class="order-meta">
+        <div><strong>PAIEMENT</strong>Wave uniquement<br/>+225 01 70 40 41 09</div>
+        <div><strong>CONTACT</strong>daboujohan@gmail.com</div>
+        <div><strong>HORAIRES</strong>24h/24, lundi–samedi<br/>Fermé le dimanche</div>
+        <div><strong>PARRAINAGE</strong>450 F de réduction par filleul</div>
+      </div>
+    </div>
+
+    <p class="service-note">KÔVEX se limite au dépannage informatique, aux cours Python, aux licences logicielles et aux sites web simples. Pour les projets de grande envergure (applications complexes, plateformes de paiement, réseaux sociaux), la demande est transmise à un partenaire technique qualifié.</p>
+  </section>
+
+  <!-- IDENTITY -->
+  <section id="identite" class="fade-up">
+    <p class="section-label">QUI SOMMES-NOUS</p>
+    <h2 class="section-title">Un univers.<br/><span>Trois piliers.</span></h2>
+    <div class="section-divider"></div>
+    <div class="identity-grid">
+      <div class="identity-card">
+        <div class="identity-icon">⚡</div>
+        <h3>DÉVELOPPEMENT</h3>
+        <p>APIs, applications web et mobile. Des outils pensés pour le marché africain et le monde entier.</p>
+      </div>
+      <div class="identity-card">
+        <div class="identity-icon">🌍</div>
+        <h3>CRÉATION</h3>
+        <p>Langages construits, identités visuelles, expériences numériques. La technologie comme art.</p>
+      </div>
+      <div class="identity-card">
+        <div class="identity-icon">◈</div>
+        <h3>INNOVATION</h3>
+        <p>Penser différemment. Construire des solutions qui n'existaient pas encore. Toujours en avant.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <div class="full-section" id="projets">
+    <div class="inner">
+      <p class="section-label fade-up">NOS PROJETS</p>
+      <h2 class="section-title fade-up">L'écosystème <span>KÔVEX</span></h2>
+      <div class="section-divider"></div>
+      <div class="projects-grid">
+
+        <div class="project-card fade-up">
+          <span class="project-status status-live">● LIVE</span>
+          <div class="project-name">VITE API</div>
+          <p class="project-desc">L'API de paiement mobile la plus rapide d'Afrique. Simule Wave, Orange Money, Moov, MTN avec une seule intégration.</p>
+          <div class="project-tags">
+            <span class="tag">NODE.JS</span>
+            <span class="tag">REST API</span>
+            <span class="tag">PAIEMENT</span>
+            <span class="tag">AFRIQUE</span>
+          </div>
+        </div>
+
+        <div class="project-card fade-up">
+          <span class="project-status status-active">◌ ACTIF</span>
+          <div class="project-name">JOVÏNSCRIPT</div>
+          <p class="project-desc">Un langage construit original avec 28 caractères, grammaire OVS et système d'écriture unique. Traducteur web inclus.</p>
+          <div class="project-tags">
+            <span class="tag">LINGUISTIQUE</span>
+            <span class="tag">CONLANG</span>
+            <span class="tag">WEB APP</span>
+          </div>
+        </div>
+
+        <div class="project-card fade-up">
+          <span class="project-status status-active">◌ ACTIF</span>
+          <div class="project-name">ABOUDEV</div>
+          <p class="project-desc">Dashboard personnel de gestion de projets. Interface de suivi, déploiement sur Render.com.</p>
+          <div class="project-tags">
+            <span class="tag">DASHBOARD</span>
+            <span class="tag">EXPRESS</span>
+            <span class="tag">RENDER</span>
+          </div>
+        </div>
+
+        <div class="project-card fade-up">
+          <span class="project-status status-soon">◎ BIENTÔT</span>
+          <div class="project-name">TERMCHAT</div>
+          <p class="project-desc">Messagerie terminal. Communication directe via interface TUI sur Termux et serveurs distants.</p>
+          <div class="project-tags">
+            <span class="tag">TUI</span>
+            <span class="tag">TERMUX</span>
+            <span class="tag">CHAT</span>
+          </div>
+        </div>
+
+        <div class="project-card fade-up">
+          <span class="project-status status-soon">◎ BIENTÔT</span>
+          <div class="project-name">LIVRECI</div>
+          <p class="project-desc">Solution de livraison locale pour la Côte d'Ivoire. Connecter vendeurs et acheteurs en temps réel.</p>
+          <div class="project-tags">
+            <span class="tag">LOGISTIQUE</span>
+            <span class="tag">CÔTE D'IVOIRE</span>
+            <span class="tag">MOBILE</span>
+          </div>
+        </div>
+
+        <div class="project-card fade-up">
+          <span class="project-status status-soon">◎ BIENTÔT</span>
+          <div class="project-name">GRANDJEU</div>
+          <p class="project-desc">Plateforme de jeux et compétitions en ligne. Divertissement numérique made in Africa.</p>
+          <div class="project-tags">
+            <span class="tag">GAMING</span>
+            <span class="tag">COMPÉTITION</span>
+            <span class="tag">WEB</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACT -->
+  <section id="contact" class="fade-up">
+    <p class="section-label">TRAVAILLER ENSEMBLE</p>
+    <h2 class="section-title">Contacte <span>KÔVEX</span></h2>
+    <div class="section-divider"></div>
+    <div class="contact-wrap">
+      <p>Tu as un projet, une idée, une collaboration en tête ? KÔVEX construit des solutions réelles pour des problèmes réels. Parlons-en.</p>
+      <a href="mailto:contact@kovex.dev" class="contact-btn">▸ ENVOYER UN MESSAGE</a>
+    </div>
+  </section>
+
+  <!-- SECTION AFRIQUE + CHAÎNE WHATSAPP -->
+  <div id="communaute" style="padding: 5rem 0; text-align:center; position:relative; z-index:1;">
+    <div style="max-width:1100px; margin:0 auto; padding:0 2rem;">
+      <p class="section-label fade-up" style="text-align:center;">NOTRE COMMUNAUTÉ</p>
+      <h2 class="section-title fade-up" style="text-align:center;">KÔVEX est <span>africain</span>.<br/>KÔVEX est <span>mondial</span>.</h2>
+      <div class="section-divider" style="margin: 0 auto 3rem;"></div>
+      <div class="fade-up" style="margin: 0 auto 3rem; max-width: 280px;">
+        <svg viewBox="0 0 400 450" xmlns="http://www.w3.org/2000/svg" style="width:100%; filter: drop-shadow(0 0 30px rgba(0,229,255,0.2));">
+          <path d="M180,20 L220,18 L255,30 L280,55 L295,80 L300,110 L290,140 L295,170 L300,200 L295,230 L285,260 L270,290 L250,320 L225,345 L200,370 L180,385 L160,370 L140,345 L118,315 L100,280 L88,250 L80,220 L82,190 L78,160 L72,130 L78,100 L90,72 L110,50 L140,30 Z" fill="rgba(0,229,255,0.05)" stroke="#00E5FF" stroke-width="2" opacity="0.7"/>
+          <circle cx="170" cy="205" r="6" fill="#D4AF37"/>
+          <circle cx="200" cy="150" r="3" fill="#00E5FF" opacity="0.8"/>
+          <circle cx="225" cy="225" r="3" fill="#00E5FF" opacity="0.8"/>
+          <circle cx="148" cy="182" r="3" fill="#00E5FF" opacity="0.8"/>
+          <circle cx="188" cy="265" r="3" fill="#00E5FF" opacity="0.8"/>
+          <line x1="170" y1="205" x2="200" y2="150" stroke="#D4AF37" stroke-width="1" opacity="0.3" stroke-dasharray="4,4"/>
+          <line x1="170" y1="205" x2="225" y2="225" stroke="#D4AF37" stroke-width="1" opacity="0.3" stroke-dasharray="4,4"/>
+          <line x1="170" y1="205" x2="148" y2="182" stroke="#D4AF37" stroke-width="1" opacity="0.3" stroke-dasharray="4,4"/>
+          <line x1="170" y1="205" x2="188" y2="265" stroke="#D4AF37" stroke-width="1" opacity="0.3" stroke-dasharray="4,4"/>
+          <text x="55" y="212" font-family="monospace" font-size="11" fill="#D4AF37" opacity="0.9">🇨🇮 HQ</text>
+          <line x1="152" y1="207" x2="112" y2="210" stroke="#D4AF37" stroke-width="1" opacity="0.4"/>
+        </svg>
+      </div>
+      <div class="fade-up" style="background:#11111f; border:1px solid rgba(37,211,102,0.25); padding:2.5rem 2rem; max-width:500px; margin:0 auto;">
+        <div style="font-size:2.2rem; margin-bottom:1rem;">📢</div>
+        <h3 style="font-family:'Space Mono',monospace; font-size:0.85rem; letter-spacing:3px; color:#25D366; margin-bottom:0.75rem;">CHAÎNE WHATSAPP OFFICIELLE</h3>
+        <p style="font-size:0.85rem; opacity:0.5; line-height:1.7; margin-bottom:1.5rem;">Suis <strong style="color:#fff; opacity:1;">AbouDev Labs</strong> pour recevoir toutes les actualités KÔVEX — lancements, offres et mises à jour.</p>
+        <a href="https://whatsapp.com/channel/0029Vb8P5l24dTnSN1rUot1M" target="_blank" rel="noopener"
+           style="display:inline-flex; align-items:center; gap:0.75rem; padding:0.85rem 2rem; background:#25D366; color:#fff; font-family:'Space Mono',monospace; font-size:0.72rem; letter-spacing:2px; text-decoration:none;">
+          <svg width="18" height="18" viewBox="0 0 32 32" fill="white"><path d="M22.5 9.5A8.96 8.96 0 0 0 16 7a9 9 0 0 0-7.8 13.5L7 25l4.65-1.2A9 9 0 1 0 22.5 9.5zm-6.5 13.8a7.4 7.4 0 0 1-3.8-1l-.27-.16-2.76.72.74-2.7-.18-.28A7.5 7.5 0 1 1 16 23.3zm4.1-5.6c-.22-.11-1.32-.65-1.52-.72-.2-.08-.35-.11-.5.11-.15.22-.58.72-.71.87-.13.15-.26.17-.48.06a6.1 6.1 0 0 1-1.8-1.11 6.7 6.7 0 0 1-1.24-1.55c-.13-.22 0-.34.1-.45.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.08-.15.04-.28-.02-.39-.06-.11-.5-1.2-.68-1.64-.18-.43-.36-.37-.5-.38h-.43c-.15 0-.39.06-.6.28-.2.22-.78.76-.78 1.86s.8 2.16.91 2.31c.11.15 1.58 2.41 3.83 3.38.54.23.96.37 1.28.47.54.17 1.03.15 1.42.09.43-.07 1.32-.54 1.5-1.06.19-.52.19-.97.13-1.06-.06-.09-.2-.15-.43-.26z"/></svg>
+          REJOINDRE LA CHAÎNE
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHATSAPP FLOTTANT -->
+  <div class="wa-float">
+    <div class="wa-label">▸ COMMANDER SUR WHATSAPP</div>
+    <a class="wa-btn" href="https://wa.me/2250170404109?text=Bonjour%20K%C3%94VEX%20%F0%9F%91%8B%0AJe%20souhaite%20commander%20un%20projet." target="_blank" rel="noopener" aria-label="Contacter KÔVEX sur WhatsApp">
+      <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="16" cy="16" r="16" fill="#25D366"/>
+        <path d="M22.5 9.5A8.96 8.96 0 0 0 16 7a9 9 0 0 0-7.8 13.5L7 25l4.65-1.2A9 9 0 1 0 22.5 9.5zm-6.5 13.8a7.4 7.4 0 0 1-3.8-1l-.27-.16-2.76.72.74-2.7-.18-.28A7.5 7.5 0 1 1 16 23.3zm4.1-5.6c-.22-.11-1.32-.65-1.52-.72-.2-.08-.35-.11-.5.11-.15.22-.58.72-.71.87-.13.15-.26.17-.48.06a6.1 6.1 0 0 1-1.8-1.11 6.7 6.7 0 0 1-1.24-1.55c-.13-.22 0-.34.1-.45.1-.1.22-.26.33-.39.11-.13.15-.22.22-.37.08-.15.04-.28-.02-.39-.06-.11-.5-1.2-.68-1.64-.18-.43-.36-.37-.5-.38h-.43c-.15 0-.39.06-.6.28-.2.22-.78.76-.78 1.86s.8 2.16.91 2.31c.11.15 1.58 2.41 3.83 3.38.54.23.96.37 1.28.47.54.17 1.03.15 1.42.09.43-.07 1.32-.54 1.5-1.06.19-.52.19-.97.13-1.06-.06-.09-.2-.15-.43-.26z" fill="white"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>© 2026 <span>KÔVEX</span> · CREATE · BUILD · INNOVATE · CÔTE D'IVOIRE</p>
+  </footer>
+
+  <script>
+    // Fade in on scroll
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 100);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // Glow effect on project cards
+    document.querySelectorAll('.project-card').forEach(card => {
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width) * 100;
+        const y = ((e.clientY - rect.top) / rect.height) * 100;
+        card.style.background = `radial-gradient(circle at ${x}% ${y}%, #161628, #11111f)`;
+      });
+      card.addEventListener('mouseleave', () => {
+        card.style.background = '';
+      });
+    });
+  </script>
+</body>
+</html>
